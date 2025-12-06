@@ -51,6 +51,62 @@ export class MyMCP extends McpAgent {
 				return { content: [{ type: "text", text: String(result) }] };
 			},
 		);
+		// Square Root tool
+        this.server.tool(
+            "squareRoot", 
+            { n: z.number() }, 
+            async ({ n }) => {
+                if (n < 0) {
+                    return { 
+                        content: [{ 
+                            type: "text", 
+                            text: "Error: Cannot take the square root of a negative number" 
+                        }] 
+                    };
+                }
+                const result = Math.sqrt(n);
+                return { content: [{ type: "text", text: String(result) }] };
+            }
+        );
+
+        // Power (Exponentiation) tool
+        this.server.tool(
+            "power", 
+            { base: z.number(), exponent: z.number() }, 
+            async ({ base, exponent }) => {
+                const result = Math.pow(base, exponent);
+                return { content: [{ type: "text", text: String(result) }] };
+            }
+        );
+
+        // Fibonacci value by index tool (0-indexed: F(0)=0, F(1)=1, F(2)=1, F(3)=2, F(4)=3, ...)
+        this.server.tool(
+            "fibonacci", 
+            { index: z.number().int().min(0) }, 
+            async ({ index }) => {
+                if (index < 0) {
+                    return { 
+                        content: [{ 
+                            type: "text", 
+                            text: "Error: Fibonacci index must be a non-negative integer" 
+                        }] 
+                    };
+                }
+                
+                // Iterative calculation for performance and simplicity
+                let a = 0;
+                let b = 1;
+                if (index === 0) return { content: [{ type: "text", text: "0" }] };
+                
+                for (let i = 2; i <= index; i++) {
+                    const temp = a + b;
+                    a = b;
+                    b = temp;
+                }
+                
+                return { content: [{ type: "text", text: String(b) }] };
+            }
+        );
 	}
 }
 
